@@ -45,4 +45,4 @@ def load_text(path_naf):
     tree = et.parse(path_naf)
     root = tree.getroot()
     text = utils_naf.get_text(root)
-    return text.text
+    return text
