@@ -235,6 +235,6 @@ def get_predicate_role_info(root, event_q, anchor_filter=True):
             else:
                 if any([role_dict['anchor'] == True for role_dict in pred_dict['roles']]):
                     predicate_role_info.append(pred_dict)
-    else:
-        print('No srl layer')
+    # else:
+    #     print('No srl layer')
     return predicate_role_info

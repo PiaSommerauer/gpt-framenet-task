@@ -9,10 +9,10 @@ def get_text_names(incident_name, lang, inc2str, inc2label, inc2lang2doc):
         label2incid[label] = inc_id
 
     inc_id = label2incid[incident_name]
-    print(inc_id)
+    #print(inc_id)
     docs = inc2lang2doc[inc_id][lang]
 
-    print('Incident info')
+    print('Incident info:', incident_name, inc_id)
     print(inc2str[inc_id])
     print()
 
