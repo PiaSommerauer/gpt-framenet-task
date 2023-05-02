@@ -166,13 +166,7 @@ def get_role_info(role, tok_coref_dict, term_dict, term_mw_dict, event_q):
         #print(target_span)
         if '.' in target_span:
             target_span = target_span.split('.')[0]
-        # if not target_span.startswith('t'):
-        #     print(target_span)
-        #w = term_dict[target_span]
-        
-        # tok_ids = []
-        # if target_span.startswith('mw'):
-        #     print(target_span)
+
         if target_span in all_mw_ids:
             #print('found mw!', target_span)
             tok_ids = [tok_id for tok_id, mw_ids in term_mw_dict.items() if target_span in mw_ids]
@@ -222,10 +216,16 @@ def get_predicate_role_info(root, event_q, anchor_filter=True):
         #print(term_mw_dict)
         for predicate in predicates:
             pred_dict = get_predicate_info(predicate, tok_coref_dict, term_dict, term_mw_dict, event_q)
+            for k, v in pred_dict.items():
+                if type(v) == set:
+                    pred_dict[k] = list(v)
             roles = predicate.findall('role')
             pred_dict['roles'] = []
             for role in roles:
                 role_dict = get_role_info(role, tok_coref_dict, term_dict, term_mw_dict, event_q)
+                for k, v in role_dict.items():
+                    if type(v) == set:
+                        role_dict[k] = list(v)
                 pred_dict['roles'].append(role_dict)
             if pred_dict['anchor'] == True:
                 predicate_role_info.append(pred_dict)

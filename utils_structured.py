@@ -32,7 +32,7 @@ def load_structured_data(path_structured):
         
     return type2inc, type2label, inc2label, inc2lang2doc, annotation_status_dict, inc2str
 
-def generate_overview(lang, type2inc, type2label, inc2label, inc2lang2doc, annotation_status_dict):
+def generate_overview(lang, type2inc, type2label, inc2label, inc2lang2doc, annotation_status_dict, inc2str):
     table_data = []
     for ty_id, inc_ids in type2inc.items():
         ty_label = type2label[ty_id]
@@ -44,6 +44,14 @@ def generate_overview(lang, type2inc, type2label, inc2label, inc2lang2doc, annot
             status_cnt['typeID'] = ty_id
             status_cnt['inc'] = inc_label
             status_cnt['incID'] = inc_id
+            if 'sem:hasTimeStamp' in inc2str[inc_id]:
+                if len(inc2str[inc_id]['sem:hasTimeStamp']) > 0:
+                    status_cnt['inc_time'] = inc2str[inc_id]['sem:hasTimeStamp'][0].split('|')[0].strip().split('T')[0]
+                else:
+                    status_cnt['inc_time'] = '0000-00-00'          
+            else:
+                status_cnt['inc_time'] = '0001-01-01'#2016-02-25
+                #print(inc2str[inc_id])
             docs = inc2lang2doc[inc_id]
             if lang in docs:
                 docs_lang = docs[lang]

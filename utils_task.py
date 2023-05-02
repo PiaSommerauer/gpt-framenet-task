@@ -4,7 +4,9 @@ import utils_docs
 import utils_naf
 import utils_task
 import os
+import json
 import pandas as pd
+from datetime import datetime
 
 def get_frame_overlap(predicate_info1, predicate_info2):
     pair_dict = dict()
@@ -50,9 +52,10 @@ def get_doc_pred_dict(path_texts, docs, inc_id):
     return doc_pred_dict
 
 
-def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id = None):
+def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id = None, inc1_time = None, inc2_time = None):
     # collect pairs
     data = []
+    
     # create text pairs
     if docs2 is None:
         doc_pairs = itertools.combinations(docs1, 2)
@@ -62,6 +65,8 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
         doc_pred_dict = get_doc_pred_dict(path_texts, docs1, inc1_id)
         # inc_doc_pred_dict = dict()
         # inc_doc_pred_dict = 
+        inc_times = [inc1_time, inc1_time]
+        
             
     else:
         doc_pairs = itertools.product(docs1, docs2)
@@ -71,6 +76,7 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
         #print(doc_pred_dict.keys())
         label = 0
         inc_ids = [inc1_id, inc2_id]
+        inc_times = [inc1_time, inc2_time]
     
     for pair in doc_pairs:
         pair_dict = dict()
@@ -81,18 +87,32 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
             #print(doc)
             path_naf = f'{path_texts}/{doc}.naf'
             #print(path_naf)
-            # tree = et.parse(path_naf)
-            # root = tree.getroot()
+            inc_time = inc_times[n]
+            # check format:
+            if len(inc_time) != 10:
+                inc_time = '0001-01-01'
+            
+            inc_time_dt = datetime.strptime(inc_time, '%Y-%m-%d')
             
             # if not root is None:
             if os.path.isfile(path_naf):
                 #print(inc_ids[n])
                 predicate_info = doc_pred_dict[doc]
+                tree = et.parse(path_naf)
+                root = tree.getroot() 
+                doc_time = utils_naf.get_timestamp(root)
+                doc_time_str = doc_time.split('T')[0]
+                if len(doc_time_str) != 10:
+                    doc_time_str = '0001-01-01'
+                doc_time_dt = datetime.strptime(doc_time_str, '%Y-%m-%d')
+                dst = doc_time_dt - inc_time_dt
+                
                 if len(predicate_info) > 0:
                     pred_info_dicts.append(predicate_info)
                     pair_dict[f'title{n}'] = doc
                     pair_dict[f'text{n}'] = utils_docs.load_text(path_naf)
                     pair_dict[f'inc_id{n}'] = inc_ids[0]
+                    pair_dict[f'temp_dist{n}'] = dst
 
         if len(pred_info_dicts) == 2:
             frame_dict = get_frame_overlap(pred_info_dicts[0], pred_info_dicts[1])
@@ -111,15 +131,21 @@ def create_event_type_data(type_selected, overview_df, path_data, lang, inc2labe
     os.makedirs('task_data', exist_ok=True)
     type_selected_str = type_selected.replace(' ', '-')
     out_path = f'task_data/{type_selected_str}_{lang}.csv'
+    path_frames = f'task_data/{type_selected_str}_{lang}_frames.json'
     incidents_id_dict = dict()
     overview_df.fillna(0)
+    
+    doc_pred_dict_all = dict()
+    inc_inc_time_dict = dict()
 
     for i, row in overview_df.iterrows():
         et = row['type']
         n_annotated = row['annotated-manual']
+        inc_time = row['inc_time']
         #print(n_annotated)
         if et == type_selected and n_annotated >= min_doc :
             incidents_id_dict[row['inc']] = row['incID']
+            inc_inc_time_dict[row['incID']] = inc_time
 
 
     inc_combinations =  list(itertools.combinations(incidents_id_dict.keys(), 2))
@@ -127,20 +153,31 @@ def create_event_type_data(type_selected, overview_df, path_data, lang, inc2labe
     all_data = []
 
     for name, inc_id in incidents_id_dict.items():
+        inc1_time = inc_inc_time_dict[inc_id]
         inc1_id, docs1 = utils_docs.get_text_names(name, lang, inc2str, inc2label, inc2lang2doc)
-        data_same, doc_pred_dict = utils_task.get_text_pairs(path_texts, docs1 = docs1, inc1_id = inc1_id)
-        print(name, inc_id, len(data_same))
+        data_same, doc_pred_dict = utils_task.get_text_pairs(path_texts, docs1 = docs1, inc1_id = inc1_id, inc1_time = inc1_time)
+        #print(name, inc_id, len(data_same))
         all_data.extend(data_same)
+        doc_pred_dict_all.update(doc_pred_dict)
 
     # different     
     for name1, name2 in inc_combinations:    
         inc1_id, docs1 = utils_docs.get_text_names(name1, lang, inc2str, inc2label, inc2lang2doc)
         inc2_id, docs2 = utils_docs.get_text_names(name2, lang, inc2str, inc2label, inc2lang2doc)
-        data_different, pred_docs_different = utils_task.get_text_pairs(path_texts, docs1 = docs1, docs2 = docs2, inc1_id = inc1_id, inc2_id = inc2_id)
+        inc1_time = inc1_time = inc_inc_time_dict[inc1_id]
+        inc2_time = inc1_time = inc_inc_time_dict[inc2_id]
+        data_different, pred_docs_different = utils_task.get_text_pairs(path_texts, docs1 = docs1, docs2 = docs2, 
+                                                                        inc1_id = inc1_id, inc2_id = inc2_id, inc1_time = inc1_time, inc2_time = inc2_time)
         all_data.extend(data_different)
+        doc_pred_dict_all.update(pred_docs_different)
 
 
     df = pd.DataFrame(all_data)
     df.to_csv(out_path)
+    
+    with open(path_frames, 'w') as outfile:
+        json.dump(doc_pred_dict_all, outfile)
+    
     print(f'Created dataset for event type: {type_selected}')
     print(f'Written dataset to: {out_path}')
+    print(f'Frame info written to: {path_frames}')
