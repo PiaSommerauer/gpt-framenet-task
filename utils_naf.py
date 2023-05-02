@@ -125,6 +125,8 @@ def get_predicate_info(predicate, tok_coref_dict, term_dict, term_mw_dict, event
                         if tok_id in term_dict:
                             predicate_dict['coref_chain'].add(term_dict[tok_id].strip())
                             predicate_dict['coref_ids'].add(tok_id) 
+                            predicate_dict['reference'] = coref
+                            
                         # else:
                         #     print('could not find tok_id', tok_id)
                 # predicate_dict['coref_chain'].update([term_dict[tok_id].strip() for tok_id, cf in tok_coref_dict.items() if cf == coref])
@@ -193,6 +195,7 @@ def get_role_info(role, tok_coref_dict, term_dict, term_mw_dict, event_q):
                         if tok_id in term_dict:
                             role_dict['coref_chain'].add(term_dict[tok_id].strip())
                             role_dict['coref_ids'].add(tok_id) 
+                            role_dict['reference'] = coref
                         # else:
                         #     print('could not find tok_id', tok_id)
     if event_q in coref_ids:
