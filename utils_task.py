@@ -52,7 +52,7 @@ def get_doc_pred_dict(path_texts, docs, inc_id):
     return doc_pred_dict
 
 
-def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id = None, inc1_time = None, inc2_time = None):
+def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id = None, inc1_time = None, inc2_time = None, inc_name1 = None, inc_name2 = None):
     # collect pairs
     data = []
     
@@ -66,6 +66,7 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
         # inc_doc_pred_dict = dict()
         # inc_doc_pred_dict = 
         inc_times = [inc1_time, inc1_time]
+        inc_names = [inc_name1, inc_name1]
         
             
     else:
@@ -77,6 +78,7 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
         label = 0
         inc_ids = [inc1_id, inc2_id]
         inc_times = [inc1_time, inc2_time]
+        inc_names = [inc_name1, inc_name2]
     
     for pair in doc_pairs:
         pair_dict = dict()
@@ -121,6 +123,7 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
                     pair_dict[f'title{n}'] = doc
                     pair_dict[f'text{n}'] = utils_docs.load_text(path_naf)
                     pair_dict[f'inc_id{n}'] = inc_ids[0]
+                    pair_dict[f'inc_name{n}'] = inc_names[n]
                     pair_dict[f'temp_dist{n}'] = dst
 
         if len(pred_info_dicts) == 2:
@@ -164,7 +167,7 @@ def create_event_type_data(type_selected, overview_df, path_data, lang, inc2labe
     for name, inc_id in incidents_id_dict.items():
         inc1_time = inc_inc_time_dict[inc_id]
         inc1_id, docs1 = utils_docs.get_text_names(name, lang, inc2str, inc2label, inc2lang2doc)
-        data_same, doc_pred_dict = utils_task.get_text_pairs(path_texts, docs1 = docs1, inc1_id = inc1_id, inc1_time = inc1_time)
+        data_same, doc_pred_dict = utils_task.get_text_pairs(path_texts, docs1 = docs1, inc1_id = inc1_id, inc1_time = inc1_time, inc_name1 = name, inc_name2 = name)
         #print(name, inc_id, len(data_same))
         all_data.extend(data_same)
         doc_pred_dict_all.update(doc_pred_dict)
@@ -176,7 +179,7 @@ def create_event_type_data(type_selected, overview_df, path_data, lang, inc2labe
         inc1_time = inc1_time = inc_inc_time_dict[inc1_id]
         inc2_time = inc1_time = inc_inc_time_dict[inc2_id]
         data_different, pred_docs_different = utils_task.get_text_pairs(path_texts, docs1 = docs1, docs2 = docs2, 
-                                                                        inc1_id = inc1_id, inc2_id = inc2_id, inc1_time = inc1_time, inc2_time = inc2_time)
+                                                                        inc1_id = inc1_id, inc2_id = inc2_id, inc1_time = inc1_time, inc2_time = inc2_time, inc_name1 = name1, inc_name2 = name2)
         all_data.extend(data_different)
         doc_pred_dict_all.update(pred_docs_different)
 
