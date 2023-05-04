@@ -102,6 +102,15 @@ def get_text_pairs(path_texts, docs1 = [], docs2 = None, inc1_id = None, inc2_id
                 root = tree.getroot() 
                 doc_time = utils_naf.get_timestamp(root)
                 doc_time_str = doc_time.split('T')[0]
+                # check format
+                doc_time_l = doc_time_str.split('-')
+                doc_time_l_int = [int(d) for d in doc_time_l]
+                doc_time_l_clean = []
+                if doc_time_l_int[1] > 12:
+                    # date wrong way around
+                    doc_time_l_clean = [str(doc_time_l_int[0]), str(doc_time_l_int[2]), str(doc_time_l_int[1])]
+                    doc_time_str = '-'.join(doc_time_l_clean)
+               
                 if len(doc_time_str) != 10:
                     doc_time_str = '0001-01-01'
                 doc_time_dt = datetime.strptime(doc_time_str, '%Y-%m-%d')

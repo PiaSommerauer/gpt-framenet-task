@@ -122,7 +122,7 @@
 120,mass shooting,Q21480300,2009 Espoo shopping mall shooting,Q2458178,2009-12-31,0,,,
 121,mass shooting,Q21480300,2017 Tehran attacks,Q30147595,2017-06-07,0,,,
 122,mass shooting,Q21480300,YouTube headquarters shooting,Q51339458,2018-04-03,0,,,
-123,mass shooting,Q21480300,2019 Utrecht shooting,Q62090804,0001-01-01,49,6.0,,43.0
+123,mass shooting,Q21480300,2019 Utrecht shooting,Q62090804,2019-03-18,49,6.0,,43.0
 124,mass shooting,Q21480300,Capital Gazette shooting,Q55239340,2018-06-28,0,,,
 125,mass shooting,Q21480300,2015 Bamako shooting,Q19600326,2015-03-07,0,,,
 126,mass shooting,Q21480300,STEM School Highlands Ranch shooting,Q63590016,2019-05-07,0,,,
@@ -214,7 +214,7 @@
 212,economic crisis,Q290178,1983 Israel bank stock crisis,Q4581056,1983-01-01,0,,,
 213,economic crisis,Q290178,South American economic crisis of 2002,Q7565979,2002-01-01,0,,,
 214,economic crisis,Q290178,Panic of 1907,Q844449,1907-01-01,0,,,
-215,disease outbreak,Q3241045,COVID-19 pandemic in the Netherlands,Q86756826,0001-01-01,333,318.0,2.0,13.0
+215,disease outbreak,Q3241045,COVID-19 pandemic in the Netherlands,Q86756826,0001-01-01,333,316.0,4.0,13.0
 216,disease outbreak,Q3241045,COVID-19 pandemic,Q81068910,0001-01-01,25,25.0,,
 217,royal wedding,Q63442071,"wedding of Haakon, Crown Prince of Norway, and Mette-Marit Tjessem Høiby",Q130713,2001-08-25,0,,,
 218,royal wedding,Q63442071,"wedding of Albert II, Prince of Monaco, and Charlene Wittstock",Q1827444,2011-07-01,0,,,
@@ -233,7 +233,7 @@
 231,royal wedding,Q63442071,wedding of Princess Eugenie and Jack Brooksbank,Q48815612,2018-10-12,0,,,
 232,royal wedding,Q63442071,"wedding of Frederik, Crown Prince of Denmark, and Mary Donaldson",Q7979109,2004-05-14,0,,,
 233,royal wedding,Q63442071,wedding of Prince William and Catherine Middleton,Q486814,2011-04-29,0,,,
-234,aircraft shootdown,Q6539177,Malaysia Airlines Flight 17,Q17374096,0001-01-01,135,26.0,,109.0
+234,aircraft shootdown,Q6539177,Malaysia Airlines Flight 17,Q17374096,0001-01-01,135,16.0,9.0,110.0
 235,natural disaster,Q8065,2021 European floods,Q107529288,0001-01-01,19,10.0,,9.0
 236,storm,Q81054,2007 Siberian orange snow,Q4609262,2007-02-01,0,,,
 237,storm,Q81054,Eyemouth disaster,Q1481974,1881-10-14,0,,,
